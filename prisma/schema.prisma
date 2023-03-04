@@ -9,3 +9,48 @@ datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+model User {
+    id                   String   @id @default(uuid())
+    email                String   @unique
+    name                 String
+    lastName             String
+    role                 Role
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    driverRidesDrived    Ride[]   @relation(name: "driver")
+    clientRidesRequested Ride[]   @relation(name: "client")
+    password             String
+    currentLatitude      Decimal?
+    currentLongitude     Decimal?
+}
+
+model Ride {
+    id               String    @id @default(uuid())
+    initialLatitude  Decimal
+    initialLongitude Decimal
+    finalLatitude    Decimal?
+    finalLongitude   Decimal?
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime? @updatedAt
+    clientId         String
+    client           User      @relation(fields: [clientId], references: [id], name: "client")
+    driverId         String
+    driver           User      @relation(fields: [driverId], references: [id], name: "driver")
+    totalAmount      Float?
+}
+
+model PaymentMethod {
+    id        String  @id @default(uuid())
+    preferred Boolean @default(false)
+}
+
+enum RideState {
+    STARTED
+    FINISHED
+}
+
+enum Role {
+    RIDER
+    DRIVER
+}

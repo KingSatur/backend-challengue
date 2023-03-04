@@ -1,5 +1,5 @@
 {
-  "name": "backend-challengue",
+  "name": "ride-management-service",
   "version": "0.0.1",
   "description": "",
   "author": "KingSatur",
@@ -27,11 +27,14 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@prisma/client": "4.11.0",
-    "faker": "^6.6.6",
+    "@faker-js/faker": "5.5.3",
+    "bcrypt": "5.0.0",
     "joi": "^17.7.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "swagger-ui-express": "^4.6.2"
+    "swagger-ui-express": "^4.6.2",
+    "class-validator": "0.14.0",
+    "class-transformer": "0.5.1"
   },
   "devDependencies": {
     "@commitlint/cli": "17.4.4",
@@ -43,6 +46,9 @@
     "@types/jest": "29.2.4",
     "@types/node": "18.11.18",
     "@types/supertest": "^2.0.11",
+    "@types/faker": "5.5.9",
+    "@types/bcrypt": "5.0.0",
+    "lint-staged": "13.1.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
