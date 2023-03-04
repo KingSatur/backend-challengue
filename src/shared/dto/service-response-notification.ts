@@ -1,5 +1,7 @@
-export interface ServiceResponseNotification {
-  status: number;
-  message: string;
-  code: string;
+export class ServiceResponseNotification {
+  constructor(
+    public status: number,
+    public message: string,
+    public code: string,
+  ) {}
 }

@@ -23,26 +23,43 @@ model User {
     password             String
     currentLatitude      Decimal?
     currentLongitude     Decimal?
+    phoneNumber          String
+    phonePrefix          String
+    city                 String
+    state                String
+    address              String
 }
 
 model Ride {
-    id               String    @id @default(uuid())
-    initialLatitude  Decimal
-    initialLongitude Decimal
-    finalLatitude    Decimal?
-    finalLongitude   Decimal?
-    createdAt        DateTime  @default(now())
-    updatedAt        DateTime? @updatedAt
-    clientId         String
-    client           User      @relation(fields: [clientId], references: [id], name: "client")
-    driverId         String
-    driver           User      @relation(fields: [driverId], references: [id], name: "driver")
-    totalAmount      Float?
+    id                   String       @id @default(uuid())
+    state                RideState    @default(STARTED)
+    initialLatitude      Decimal
+    initialLongitude     Decimal
+    finalLatitude        Decimal?
+    finalLongitude       Decimal?
+    createdAt            DateTime     @default(now())
+    updatedAt            DateTime?    @updatedAt
+    clientId             String
+    client               User         @relation(fields: [clientId], references: [id], name: "client")
+    driverId             String
+    driver               User         @relation(fields: [driverId], references: [id], name: "driver")
+    totalAmount          Float?
+    rideChanges          RideChange[]
+    transactionId        String?
+    transactionReference String?
 }
 
 model PaymentMethod {
     id        String  @id @default(uuid())
     preferred Boolean @default(false)
+}
+
+model RideChange {
+    id         String    @id @default(uuid())
+    ride       Ride      @relation(fields: [rideId], references: [id])
+    rideId     String
+    lastStatus RideState
+    newStatus  RideState
 }
 
 enum RideState {
