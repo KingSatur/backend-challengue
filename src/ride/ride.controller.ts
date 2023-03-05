@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, UseGuards } from '@nestjs/common';
 import { RideService } from './ride.service';
 import {
   CreateRideRequestDto,
@@ -9,12 +9,19 @@ import {
   FinishRideResponseDto,
 } from './dto/finish-ride.dto';
 import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
+import { AuthGuard } from '@nestjs/passport';
+import { HasRoles } from '../shared/decorators/has-roles.decorator';
+import { Role } from '../constants/role.enum';
+import { JwtAuthGuard } from '../shared/guard/jwt.guard';
+import { RolesGuard } from '../shared/guard/role.guard';
 
 @Controller('ride')
 export class RideController {
   constructor(private readonly rideService: RideService) {}
 
   @Post()
+  @HasRoles(Role.RIDER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async create(
     @Body() createRideDto: CreateRideRequestDto,
   ): Promise<ServiceResponse<CreateRideResponseDto>> {
@@ -26,6 +33,8 @@ export class RideController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @HasRoles(Role.DRIVER)
   async finishRide(
     @Param('id') rideId: string,
     @Body() finishRideDto: FinishRideRequestDto,

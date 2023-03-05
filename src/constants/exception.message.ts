@@ -7,6 +7,10 @@ export const ExceptionMessage = {
     message: 'Cannot request ride without already payment method created',
     code: 'CANNOT_REQUEST_RIDE_WITHOUT_PAYMENT_METHOD_CREATED',
   },
+  INVALID_CREDENTIALS: {
+    message: 'Invalid credentials',
+    code: 'INVALID_CREDENTIALS',
+  },
   CANNOT_FINISH_NOT_OWNED_RIDE: {
     message: 'Cannot finish not owned ride',
     code: 'CANNOT_HAVE_MULTIPLE_RIDES_AT_ONCE',

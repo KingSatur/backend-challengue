@@ -23,7 +23,7 @@ export class AllExceptionsFilter
     const httpStatus =
       exception instanceof RideManagementException
         ? exception.notification?.status
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+        : exception?.response.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
 
     const responseBody: ServiceResponse<any> = {
       data: null,
@@ -31,9 +31,11 @@ export class AllExceptionsFilter
         exception instanceof RideManagementException
           ? exception.notification
           : new ServiceResponseNotification(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              ExceptionMessage.SERVER_ERROR.message,
-              ExceptionMessage.SERVER_ERROR.code,
+              exception?.response.statusCode ||
+                HttpStatus.INTERNAL_SERVER_ERROR,
+              exception?.response.message ||
+                ExceptionMessage.SERVER_ERROR.message,
+              exception?.response.error || ExceptionMessage.SERVER_ERROR.code,
             ),
       success: false,
     };

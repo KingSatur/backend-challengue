@@ -6,14 +6,16 @@ import { PaymentModule } from './payment/payment.module';
 import { RideModule } from './ride/ride.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './filter/excepion.handler';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    PrismaModule,
     ConfigModule.forRoot({
       load: [Properties],
       isGlobal: true,
     }),
+    PrismaModule,
+    AuthModule,
     PaymentModule,
     RideModule,
   ],

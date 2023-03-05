@@ -13,4 +13,6 @@ export const Properties = () => ({
   venture_public_key: process.env.VENTURE_PUBLIC_KEY,
   venture_private_key: process.env.VENTURE_PRIVATE_KEY,
   cop_to_usd_equivalence: process.env.COP_TO_USD_EQUIVALENCE,
+  jwt_secret: process.env.JWT_SECRET,
+  encrypt_ronds: process.env.ENCRYPT_RONDS,
 });

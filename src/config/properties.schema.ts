@@ -15,4 +15,6 @@ export const PropertiesValidationSchema = Joi.object({
   VENTURE_PUBLIC_KEY: Joi.string().required(),
   VENTURE_PRIVATE_KEY: Joi.string().required(),
   COP_TO_USD_EQUIVALENCE: Joi.number().required(),
+  JWT_SECRET: Joi.string().required(),
+  ENCRYPT_RONDS: Joi.number().required().max(20),
 });
