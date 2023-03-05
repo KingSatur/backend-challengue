@@ -10,7 +10,12 @@ describe('PaymentController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PaymentController],
-      providers: [PaymentService],
+      providers: [
+        {
+          provide: PaymentService,
+          useValue: {},
+        },
+      ],
       imports: [
         ConfigModule.forRoot({
           load: [],

@@ -8,7 +8,7 @@ import {
   FinishRideRequestDto,
   FinishRideResponseDto,
 } from './dto/finish-ride.dto';
-import { ServiceResponse, ServiceResponseNotification } from 'src/shared/dto';
+import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
 
 @Controller('ride')
 export class RideController {

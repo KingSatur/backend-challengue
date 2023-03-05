@@ -10,7 +10,12 @@ describe('RideController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [RideController],
-      providers: [RideService],
+      providers: [
+        {
+          provide: RideService,
+          useValue: {},
+        },
+      ],
       imports: [
         ConfigModule.forRoot({
           load: [],

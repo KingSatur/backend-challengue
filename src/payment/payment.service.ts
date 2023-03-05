@@ -3,8 +3,8 @@ import { CreatePaymentRequestDto } from './dto/create-payment-request.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { WompiService } from '../shared/wampi/wompi.service';
 import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
-import { RideManagementException } from 'src/shared/exception/ride-management-exception';
-import { ServiceResponseNotification } from 'src/shared/dto';
+import { RideManagementException } from '../shared/exception/ride-management-exception';
+import { ServiceResponseNotification } from '../shared/dto';
 import { ExceptionMessage } from '../constants/exception.message';
 import { ConfigService } from '@nestjs/config';
 
