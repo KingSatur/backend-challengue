@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-    id                   String   @id @default(uuid())
-    email                String   @unique
+    id                   String          @id @default(uuid())
+    email                String          @unique
     name                 String
     lastName             String
     role                 Role
-    createdAt            DateTime @default(now())
-    updatedAt            DateTime @updatedAt
-    driverRidesDrived    Ride[]   @relation(name: "driver")
-    clientRidesRequested Ride[]   @relation(name: "client")
+    createdAt            DateTime        @default(now())
+    updatedAt            DateTime        @updatedAt
+    driverRidesDrived    Ride[]          @relation(name: "driver")
+    clientRidesRequested Ride[]          @relation(name: "client")
     password             String
     currentLatitude      Decimal?
     currentLongitude     Decimal?
@@ -28,6 +28,7 @@ model User {
     city                 String
     state                String
     address              String
+    PaymentMethod        PaymentMethod[]
 }
 
 model Ride {
@@ -52,6 +53,10 @@ model Ride {
 model PaymentMethod {
     id        String  @id @default(uuid())
     preferred Boolean @default(false)
+    wompiId   String
+    userId    String
+    token     String  @unique
+    user      User    @relation(fields: [userId], references: [id])
 }
 
 model RideChange {

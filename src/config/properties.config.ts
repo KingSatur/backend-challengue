@@ -9,4 +9,8 @@ export const Properties = () => ({
   currency_code: process.env.CURRENCY_CODE,
   venture_reference: process.env.VENTURE_REFERENCE,
   country_code: process.env.COUNTRY_CODE,
+  card_token: process.env.CARD_TOKEN,
+  venture_public_key: process.env.VENTURE_PUBLIC_KEY,
+  venture_private_key: process.env.VENTURE_PRIVATE_KEY,
+  cop_to_usd_equivalence: process.env.COP_TO_USD_EQUIVALENCE,
 });

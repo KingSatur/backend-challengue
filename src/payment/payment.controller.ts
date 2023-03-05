@@ -1,7 +1,8 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreatePaymentRequestDto } from './dto/create-payment-request.dto';
 import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
+import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
 
 @Controller('payment')
 export class PaymentController {
@@ -9,12 +10,12 @@ export class PaymentController {
 
   @Post('/method')
   async create(
-    @Body() createPaymentDto: CreatePaymentDto,
-  ): Promise<ServiceResponse<string>> {
+    @Body() createPaymentDto: CreatePaymentRequestDto,
+  ): Promise<ServiceResponse<CreatePaymentResponseDto>> {
     return new ServiceResponse(
       true,
       new ServiceResponseNotification(null, null, null),
-      await this.paymentService.create(createPaymentDto),
+      await this.paymentService.createCardPaymentMethod(createPaymentDto),
     );
   }
 }

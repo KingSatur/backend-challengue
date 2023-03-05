@@ -11,4 +11,8 @@ export const PropertiesValidationSchema = Joi.object({
   CURRENCY_CODE: Joi.string().required(),
   VENTURE_REFERENCE: Joi.string().required(),
   COUNTRY_CODE: Joi.string().required(),
+  CARD_TOKEN: Joi.string().required(),
+  VENTURE_PUBLIC_KEY: Joi.string().required(),
+  VENTURE_PRIVATE_KEY: Joi.string().required(),
+  COP_TO_USD_EQUIVALENCE: Joi.number().required(),
 });
