@@ -36,3 +36,22 @@ export const ExceptionMessage = {
     code: 'SERVER_ERROR',
   },
 };
+
+export const OperationMessage = {
+  PAYMENT_WAS_CREATED: {
+    message: 'Payment was created for user',
+    code: 'payment_created',
+  },
+  RIDE_WAS_CREATED: {
+    message: 'Ride was created for user',
+    code: 'ride_was_created',
+  },
+  RIDE_WAS_FINISHED: {
+    message: 'Ride was finished',
+    code: 'ride_was_finished',
+  },
+  AUTH_SUCCESS: {
+    message: 'Success authentication',
+    code: 'ride_was_finished',
+  },
+};

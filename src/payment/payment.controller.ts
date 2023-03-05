@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  HttpStatus,
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentRequestDto } from './dto/create-payment-request.dto';
 import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
@@ -7,6 +14,7 @@ import { Role } from '../constants/role.enum';
 import { HasRoles } from '../shared/decorators/has-roles.decorator';
 import { RolesGuard } from '../shared/guard/role.guard';
 import { JwtAuthGuard } from '../shared/guard/jwt.guard';
+import { OperationMessage } from '../constants/exception.message';
 
 @Controller('payment')
 export class PaymentController {
@@ -16,12 +24,20 @@ export class PaymentController {
   @HasRoles(Role.RIDER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async create(
+    @Request() request,
     @Body() createPaymentDto: CreatePaymentRequestDto,
   ): Promise<ServiceResponse<CreatePaymentResponseDto>> {
     return new ServiceResponse(
       true,
-      new ServiceResponseNotification(null, null, null),
-      await this.paymentService.createCardPaymentMethod(createPaymentDto),
+      new ServiceResponseNotification(
+        HttpStatus.CREATED,
+        OperationMessage.PAYMENT_WAS_CREATED.message,
+        OperationMessage.PAYMENT_WAS_CREATED.code,
+      ),
+      await this.paymentService.createCardPaymentMethod(
+        request?.user?.userId,
+        createPaymentDto,
+      ),
     );
   }
 }

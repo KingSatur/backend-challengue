@@ -44,10 +44,11 @@ model Ride {
     client               User         @relation(fields: [clientId], references: [id], name: "client")
     driverId             String
     driver               User         @relation(fields: [driverId], references: [id], name: "driver")
-    totalAmount          Float?
+    totalAmount          Decimal?
     rideChanges          RideChange[]
-    transactionId        String?
-    transactionReference String?
+    transactionId        String?      @unique
+    transactionReference String?      @unique
+    elapsedMinutes       Float?
 }
 
 model PaymentMethod {
