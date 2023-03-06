@@ -45,22 +45,6 @@ export class PaymentService {
       );
     }
 
-    const numberOfPaymentFromToken = await this.prisma.paymentMethod.count({
-      where: {
-        token: this.cardToken,
-      },
-    });
-
-    if (numberOfPaymentFromToken > 0) {
-      throw new RideManagementException(
-        new ServiceResponseNotification(
-          HttpStatus.BAD_REQUEST,
-          ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN.message,
-          ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN.code,
-        ),
-      );
-    }
-
     const paymentMethod: CreatePaymentOnWompiResponseDto =
       await this.wompiService.createPaymentMethod(userEntity?.email);
 

@@ -107,28 +107,6 @@ describe('PaymentService', () => {
     });
   });
 
-  it('Should not create card payment method when exists other payment with same token', async () => {
-    prisma.user.findUnique = jest.fn().mockReturnValue({
-      email: 'sample@mail.com',
-    });
-    prisma.paymentMethod.count = jest.fn().mockReturnValue(1);
-    try {
-      await service.createCardPaymentMethod('', null);
-    } catch (error) {
-      expect(error).toBeDefined();
-      expect(error).toBeInstanceOf(RideManagementException);
-      expect(error?.notification?.status).toBe(400);
-      expect(error?.notification?.message).toBe(
-        ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN
-          .message,
-      );
-      expect(error?.notification?.code).toBe(
-        ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN
-          .code,
-      );
-    }
-  });
-
   it('Should not create card payment method when user is not found', async () => {
     prisma.user.findUnique = jest.fn().mockReturnValue(null);
     prisma.paymentMethod.count = jest.fn().mockReturnValue(1);

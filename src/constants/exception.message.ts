@@ -52,6 +52,6 @@ export const OperationMessage = {
   },
   AUTH_SUCCESS: {
     message: 'Success authentication',
-    code: 'ride_was_finished',
+    code: 'auth_success',
   },
 };

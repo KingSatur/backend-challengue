@@ -44,7 +44,7 @@ model Ride {
     client               User         @relation(fields: [clientId], references: [id], name: "client")
     driverId             String
     driver               User         @relation(fields: [driverId], references: [id], name: "driver")
-    totalAmount          Decimal?
+    totalAmount          Float?
     rideChanges          RideChange[]
     transactionId        String?      @unique
     transactionReference String?      @unique
@@ -52,12 +52,14 @@ model Ride {
 }
 
 model PaymentMethod {
-    id        String  @id @default(uuid())
-    preferred Boolean @default(false)
+    id        String   @id @default(uuid())
+    preferred Boolean  @default(false)
     wompiId   String
     userId    String
-    token     String  @unique
-    user      User    @relation(fields: [userId], references: [id])
+    token     String   @unique
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model RideChange {
@@ -66,6 +68,8 @@ model RideChange {
     rideId     String
     lastStatus RideState
     newStatus  RideState
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
 }
 
 enum RideState {

@@ -186,6 +186,13 @@ describe('RideService', () => {
           initialLatitude: -0.1231234132,
           initialLongitude: 1.29319043,
         },
+        include: {
+          driver: {
+            select: {
+              email: true,
+            },
+          },
+        },
       });
     });
   });

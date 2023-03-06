@@ -7,6 +7,7 @@ import {
   UseGuards,
   HttpStatus,
   Request,
+  HttpCode,
 } from '@nestjs/common';
 import { RideService } from './ride.service';
 import {
@@ -29,6 +30,7 @@ export class RideController {
   constructor(private readonly rideService: RideService) {}
 
   @Post()
+  @HttpCode(200)
   @HasRoles(Role.RIDER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async create(

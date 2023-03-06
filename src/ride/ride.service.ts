@@ -82,11 +82,19 @@ export class RideService {
         initialLatitude: createRideDto?.latitude,
         initialLongitude: createRideDto?.longitude,
       },
+      include: {
+        driver: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
 
     return new CreateRideResponseDto(
       createdRideEntity?.id,
       createdRideEntity?.driverId,
+      createdRideEntity?.driver?.email,
     );
   }
 
@@ -250,6 +258,7 @@ export class RideService {
     const driversInCity = await this.prisma.user.findMany({
       where: {
         city: currentUserCity?.city,
+        state: currentUserCity?.state,
         role: {
           not: Role.RIDER,
         },

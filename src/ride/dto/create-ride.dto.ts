@@ -9,5 +9,9 @@ export class CreateRideRequestDto {
 }
 
 export class CreateRideResponseDto {
-  constructor(public rideId: string, public driverId: string) {}
+  constructor(
+    public rideId: string,
+    public driverId: string,
+    public driverEmail: string,
+  ) {}
 }
