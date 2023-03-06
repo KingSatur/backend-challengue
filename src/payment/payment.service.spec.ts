@@ -23,16 +23,15 @@ const configValues = {
   cop_to_usd_equivalence: '',
 };
 
+const mockPrisma = {
+  user: { findUnique: () => {} },
+  paymentMethod: { count: () => {}, create: jest.fn() },
+};
+
 describe('PaymentService', () => {
   let service: PaymentService;
   let wompiService: WompiService;
-  let configService: ConfigService;
   let prisma: PrismaService;
-
-  const mockPrisma = {
-    user: { findUnique: () => {} },
-    paymentMethod: { count: () => {}, create: jest.fn() },
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -70,7 +69,6 @@ describe('PaymentService', () => {
 
     service = module.get<PaymentService>(PaymentService);
     wompiService = module.get<WompiService>(WompiService);
-    configService = module.get<ConfigService>(ConfigService);
     prisma = module.get(PrismaService);
   });
 
@@ -85,13 +83,15 @@ describe('PaymentService', () => {
     prisma.paymentMethod.count = jest.fn().mockReturnValue(0);
 
     wompiService.createPaymentMethod = jest.fn().mockReturnValue({
-      id: 543,
-      token: 'tok_prod_280_32326B334c47Ec49a516bf1785247ba2',
-      status: 'AVAILABLE',
+      data: {
+        id: 543,
+        token: 'tok_prod_280_32326B334c47Ec49a516bf1785247ba2',
+        status: 'AVAILABLE',
+      },
     });
 
     const response: CreatePaymentResponseDto =
-      await service.createCardPaymentMethod(new CreatePaymentRequestDto());
+      await service.createCardPaymentMethod('', new CreatePaymentRequestDto());
 
     expect(response.id).toBeDefined();
     expect(response.id).toEqual(543);
@@ -113,7 +113,7 @@ describe('PaymentService', () => {
     });
     prisma.paymentMethod.count = jest.fn().mockReturnValue(1);
     try {
-      await service.createCardPaymentMethod(null);
+      await service.createCardPaymentMethod('', null);
     } catch (error) {
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(RideManagementException);
@@ -133,7 +133,7 @@ describe('PaymentService', () => {
     prisma.user.findUnique = jest.fn().mockReturnValue(null);
     prisma.paymentMethod.count = jest.fn().mockReturnValue(1);
     try {
-      await service.createCardPaymentMethod(null);
+      await service.createCardPaymentMethod('', null);
     } catch (error) {
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(RideManagementException);

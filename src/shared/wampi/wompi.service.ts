@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { CreateTransactionResponse } from './dto/create-transaction';
 import { VentureData } from './dto/acceptance-token';
-import { CreatePaymentResponseDto } from './dto/payment-dto';
+import { CreatePaymentOnWompiResponseDto } from './dto/payment-dto';
 
 @Injectable()
 export class WompiService {
@@ -38,14 +38,17 @@ export class WompiService {
         `${this.baseUrl}/merchants/${this.venturePublicKey}`,
       ),
     );
-
-    return getMerchantsResponse?.data?.presigned_acceptance?.acceptance_token;
+    return getMerchantsResponse?.data?.data?.presigned_acceptance
+      ?.acceptance_token;
   }
 
-  async createPaymentMethod(email: string): Promise<CreatePaymentResponseDto> {
+  async createPaymentMethod(
+    email: string,
+  ): Promise<CreatePaymentOnWompiResponseDto> {
     const acceptanceToken = await this.getAcceptanceToken();
+
     const createPaymentResponse = await firstValueFrom(
-      this.httpService.post<CreatePaymentResponseDto>(
+      this.httpService.post<CreatePaymentOnWompiResponseDto>(
         `${this.baseUrl}/payment_sources`,
         {
           type: 'CARD',
@@ -70,8 +73,11 @@ export class WompiService {
     fullName: string;
     phoneNumber: string;
     address: string;
+    city: string;
+    state: string;
   }): Promise<CreateTransactionResponse> {
     const acceptanceToken = await this.getAcceptanceToken();
+
     const createTransactionResponse = await firstValueFrom(
       this.httpService.post<CreateTransactionResponse>(
         `${this.baseUrl}/transactions`,
@@ -88,9 +94,14 @@ export class WompiService {
           shipping_address: {
             address_line_1: data?.address,
             country: this.countryCode,
-            region: 'Cundinamarca',
-            city: 'Bogotá',
+            region: data?.state,
+            city: data?.city,
             phone_number: data?.phoneNumber,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.venturePrivateKey}`,
           },
         },
       ),

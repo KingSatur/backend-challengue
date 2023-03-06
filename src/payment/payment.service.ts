@@ -7,6 +7,7 @@ import { RideManagementException } from '../shared/exception/ride-management-exc
 import { ServiceResponseNotification } from '../shared/dto';
 import { ExceptionMessage } from '../constants/exception.message';
 import { ConfigService } from '@nestjs/config';
+import { CreatePaymentOnWompiResponseDto } from 'src/shared/wampi/dto/payment-dto';
 
 @Injectable()
 export class PaymentService {
@@ -21,9 +22,10 @@ export class PaymentService {
   }
 
   async createCardPaymentMethod(
+    userId: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createPaymentRequestDto: CreatePaymentRequestDto,
   ): Promise<CreatePaymentResponseDto> {
-    const userId = '';
     const userEntity = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -59,22 +61,21 @@ export class PaymentService {
       );
     }
 
-    const paymentMethod = await this.wompiService.createPaymentMethod(
-      userEntity?.email,
-    );
+    const paymentMethod: CreatePaymentOnWompiResponseDto =
+      await this.wompiService.createPaymentMethod(userEntity?.email);
 
     await this.prisma.paymentMethod.create({
       data: {
         preferred: true,
-        wompiId: paymentMethod?.id,
+        wompiId: paymentMethod?.data?.id,
         userId,
-        token: paymentMethod?.token,
+        token: paymentMethod?.data?.token,
       },
     });
 
     return new CreatePaymentResponseDto(
-      paymentMethod?.id,
-      paymentMethod?.status,
+      paymentMethod?.data?.id,
+      paymentMethod?.data?.status,
     );
   }
 }

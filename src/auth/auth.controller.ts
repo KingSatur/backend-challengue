@@ -1,9 +1,9 @@
 import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequestDto } from './dto/login-request';
-import { ServiceResponse, ServiceResponseNotification } from 'src/shared/dto';
+import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
 import { LoginResponsetDto } from './dto/login-response';
-import { OperationMessage } from 'src/constants/exception.message';
+import { OperationMessage } from '../constants/exception.message';
 
 @Controller('auth')
 export class AuthController {

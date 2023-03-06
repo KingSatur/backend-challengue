@@ -1,4 +1,4 @@
-import { IsNumber, IsPositive, IsUUID, Min } from 'class-validator';
+import { IsNumber, IsPositive, Min } from 'class-validator';
 
 export class FinishRideRequestDto {
   @IsNumber()

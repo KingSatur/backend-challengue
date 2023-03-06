@@ -14,7 +14,7 @@ import {
   FinishRideResponseDto,
 } from './dto/finish-ride.dto';
 import { WompiService } from '../shared/wampi/wompi.service';
-import { PaymentMethod } from '@prisma/client';
+import { PaymentMethod, Role } from '@prisma/client';
 
 @Injectable()
 export class RideService {
@@ -38,15 +38,16 @@ export class RideService {
   }
 
   async create(
+    userId: string,
     createRideDto: CreateRideRequestDto,
   ): Promise<CreateRideResponseDto> {
-    const userId = '1213';
     const currentRideCount = await this.prisma.ride.count({
       where: {
-        id: userId,
+        clientId: userId,
         state: RideState.STARTED,
       },
     });
+
     if (currentRideCount > 0) {
       throw new RideManagementException(
         new ServiceResponseNotification(
@@ -61,6 +62,7 @@ export class RideService {
         userId,
       },
     });
+
     if (paymentsForCurrentUserCount < 1) {
       throw new RideManagementException(
         new ServiceResponseNotification(
@@ -89,11 +91,10 @@ export class RideService {
   }
 
   async finishRide(
+    driverId: string,
     rideId: string,
     finishRideDto: FinishRideRequestDto,
   ): Promise<FinishRideResponseDto> {
-    const driverId = '';
-
     const currentRideEntity = await this.prisma.ride.findFirst({
       where: {
         id: rideId,
@@ -113,6 +114,8 @@ export class RideService {
             phoneNumber: true,
             phonePrefix: true,
             email: true,
+            city: true,
+            state: true,
           },
         },
       },
@@ -142,8 +145,8 @@ export class RideService {
       throw new RideManagementException(
         new ServiceResponseNotification(
           HttpStatus.BAD_REQUEST,
-          ExceptionMessage.CANNOT_FINISH_NOT_OWNED_RIDE.message,
-          ExceptionMessage.CANNOT_FINISH_NOT_OWNED_RIDE.code,
+          ExceptionMessage.CANNOT_FINISH_ALREADY_FINISH_RIDE.message,
+          ExceptionMessage.CANNOT_FINISH_ALREADY_FINISH_RIDE.code,
         ),
       );
     }
@@ -157,12 +160,7 @@ export class RideService {
       );
     const costByMinutes = this.baseMinuteFee * finishRideDto?.elapsedMinutes;
 
-    const totalAmount = [costByKilometers, costByMinutes, this.baseFee].reduce(
-      (previous, current) => {
-        return previous + current;
-      },
-      0,
-    );
+    const totalAmount = costByKilometers + costByMinutes + Number(this.baseFee);
 
     const currentUserPaymentMethod = await this.getCurrentPaymentMethod(
       currentRideEntity?.clientId,
@@ -178,18 +176,22 @@ export class RideService {
             fullName: `${currentRideEntity?.client?.name} ${currentRideEntity?.client?.lastName}`,
             paymentId: currentUserPaymentMethod?.wompiId,
             phoneNumber: `${currentRideEntity?.client?.phonePrefix}${currentRideEntity?.client?.phoneNumber}`,
+            city: currentRideEntity?.client?.city,
+            state: currentRideEntity?.client?.state,
           });
+
         const updatedRideEntity = await tx.ride.update({
           where: {
             id: currentRideEntity?.id,
           },
           data: {
             state: RideState.FINISHED,
-            totalAmount,
+            totalAmount: this.convertCurrency(totalAmount),
             finalLatitude: finishRideDto?.finalLatitude,
             finalLongitude: finishRideDto?.finalLongitude,
-            transactionId: createdTransactionOnWompi?.id,
-            transactionReference: createdTransactionOnWompi?.reference,
+            transactionId: createdTransactionOnWompi?.data?.id,
+            transactionReference: createdTransactionOnWompi?.data?.reference,
+            elapsedMinutes: finishRideDto?.elapsedMinutes,
           },
           select: {
             id: true,
@@ -233,8 +235,9 @@ export class RideService {
   }
 
   private convertCurrency(amount: number) {
-    const dolarCurency = amount / this.copToUsedFee;
-    return dolarCurency * this.centsEquivalence;
+    const dolarCurency = amount * this.copToUsedFee;
+
+    return Math.round(dolarCurency * this.centsEquivalence);
   }
 
   private async getNearestToUserDriver(userId: string): Promise<string> {
@@ -243,11 +246,16 @@ export class RideService {
         id: userId,
       },
     });
+
     const driversInCity = await this.prisma.user.findMany({
       where: {
-        city: currentUserCity.city,
+        city: currentUserCity?.city,
+        role: {
+          not: Role.RIDER,
+        },
       },
     });
+
     const driversDistance = driversInCity?.map((driver) => ({
       id: driver?.id,
       distance: this.calculateKilometersQuantity(
@@ -257,9 +265,10 @@ export class RideService {
         Number(driver?.currentLongitude),
       ),
     }));
+
     const driverWithMinDistance = driversDistance.reduce(
       (previous, current) => {
-        return current.distance <= previous.distance ? current : previous;
+        return current.distance < previous.distance ? current : previous;
       },
     );
 

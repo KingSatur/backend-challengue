@@ -18,6 +18,8 @@ export interface CreateTransactionRequest {
 }
 
 export interface CreateTransactionResponse {
-  id: string;
-  reference: string;
+  data: {
+    id: string;
+    reference: string;
+  };
 }
