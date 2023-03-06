@@ -40,18 +40,18 @@ export const ExceptionMessage = {
 export const OperationMessage = {
   PAYMENT_WAS_CREATED: {
     message: 'Payment was created for user',
-    code: 'payment_created',
+    code: 'PAYMENT_WAS_CREATED',
   },
   RIDE_WAS_CREATED: {
     message: 'Ride was created for user',
-    code: 'ride_was_created',
+    code: 'RIDE_WAS_CREATED',
   },
   RIDE_WAS_FINISHED: {
     message: 'Ride was finished',
-    code: 'ride_was_finished',
+    code: 'RIDE_WAS_FINISHED',
   },
   AUTH_SUCCESS: {
     message: 'Success authentication',
-    code: 'auth_success',
+    code: 'AUTH_SUCCESS',
   },
 };

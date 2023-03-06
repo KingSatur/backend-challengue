@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { LoginResponsetDto } from './dto/login-response';
+import { LoginResponseDto } from './dto/login-response';
 import { RideManagementException } from '../shared/exception/ride-management-exception';
 import { ServiceResponseNotification } from '../shared/dto';
 import { ExceptionMessage } from '../constants/exception.message';
@@ -66,6 +66,6 @@ export class AuthService {
       },
     );
 
-    return new LoginResponsetDto(token);
+    return new LoginResponseDto(token);
   }
 }

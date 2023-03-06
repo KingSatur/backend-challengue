@@ -9,6 +9,14 @@ async function bootstrap() {
     .setDescription('Rest api specification')
     .setVersion('v1')
     .addTag('')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'Authorization',
+    )
     .build();
 
   const app = await NestFactory.create(AppModule);

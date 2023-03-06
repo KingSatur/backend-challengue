@@ -15,14 +15,27 @@ import { HasRoles } from '../shared/decorators/has-roles.decorator';
 import { RolesGuard } from '../shared/guard/role.guard';
 import { JwtAuthGuard } from '../shared/guard/jwt.guard';
 import { OperationMessage } from '../constants/exception.message';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OpenApiSpecRideSystemResponse } from '../shared/decorators/open-api-decorator';
 
 @Controller('payment')
+@ApiTags('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('/method')
   @HasRoles(Role.RIDER)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @OpenApiSpecRideSystemResponse({
+    model: CreatePaymentResponseDto,
+    authRequired: true,
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiOperation({
+    summary:
+      'Create a payment method. IMPORTANT, this method is creating a payment method based on created CARD TOKEN in WOMPI platform',
+  })
   async create(
     @Request() request,
     @Body() createPaymentDto: CreatePaymentRequestDto,

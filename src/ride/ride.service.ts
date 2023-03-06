@@ -1,20 +1,16 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import {
-  CreateRideRequestDto,
-  CreateRideResponseDto,
-} from './dto/create-ride.dto';
+import { CreateRideRequestDto } from './dto/create-ride-request.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { RideState } from '../constants/ride-state.enum';
 import { RideManagementException } from '../shared/exception/ride-management-exception';
 import { ExceptionMessage } from '../constants/exception.message';
 import { ServiceResponseNotification } from '../shared/dto';
-import {
-  FinishRideRequestDto,
-  FinishRideResponseDto,
-} from './dto/finish-ride.dto';
+import { FinishRideRequestDto } from './dto/finish-ride-request.dto';
 import { WompiService } from '../shared/wampi/wompi.service';
 import { PaymentMethod, Role } from '@prisma/client';
+import { CreateRideResponseDto } from './dto/create-ride-response.dto';
+import { FinishRideResponseDto } from './dto/finish-ride-response.dto';
 
 @Injectable()
 export class RideService {
