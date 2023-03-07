@@ -7,18 +7,18 @@ import { RideManagementException } from '../shared/exception/ride-management-exc
 import { ExceptionMessage } from '../constants/exception.message';
 import { ServiceResponseNotification } from '../shared/dto';
 import { FinishRideRequestDto } from './dto/finish-ride-request.dto';
-import { WompiService } from '../shared/wampi/wompi.service';
 import { PaymentMethod, Role } from '@prisma/client';
 import { CreateRideResponseDto } from './dto/create-ride-response.dto';
 import { FinishRideResponseDto } from './dto/finish-ride-response.dto';
+import { WompiService } from '../shared/wompi/wompi.service';
 
 @Injectable()
 export class RideService {
-  public readonly baseFee: number;
-  public readonly baseKmFee: number;
-  public readonly baseMinuteFee: number;
-  public readonly copToUsedFee: number;
-  public readonly centsEquivalence: number = 100;
+  private readonly baseFee: number;
+  private readonly baseKmFee: number;
+  private readonly baseMinuteFee: number;
+  private readonly copToUsedFee: number;
+  private readonly centsEquivalence: number = 100;
 
   constructor(
     private readonly prisma: PrismaService,

@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ExceptionMessage } from '../constants/exception.message';
-import { ServiceResponse, ServiceResponseNotification } from 'src/shared/dto';
-import { RideManagementException } from 'src/shared/exception/ride-management-exception';
+import { ServiceResponse, ServiceResponseNotification } from '../shared/dto';
+import { RideManagementException } from '../shared/exception/ride-management-exception';
 
 @Catch()
 export class AllExceptionsFilter

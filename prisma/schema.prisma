@@ -56,10 +56,12 @@ model PaymentMethod {
     preferred Boolean  @default(false)
     wompiId   String
     userId    String
-    token     String   @unique
+    token     String
     user      User     @relation(fields: [userId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@unique([userId, token])
 }
 
 model RideChange {

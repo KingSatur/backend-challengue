@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RideService } from './ride.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { WompiService } from '../shared/wampi/wompi.service';
+import { WompiService } from '../shared/wompi/wompi.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RideManagementException } from '../shared/exception/ride-management-exception';
 import { ExceptionMessage } from '../constants/exception.message';

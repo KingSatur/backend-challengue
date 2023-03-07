@@ -1,13 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePaymentRequestDto } from './dto/create-payment-request.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { WompiService } from '../shared/wampi/wompi.service';
 import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
 import { RideManagementException } from '../shared/exception/ride-management-exception';
 import { ServiceResponseNotification } from '../shared/dto';
 import { ExceptionMessage } from '../constants/exception.message';
 import { ConfigService } from '@nestjs/config';
-import { CreatePaymentOnWompiResponseDto } from 'src/shared/wampi/dto/payment-dto';
+import { WompiService } from '../shared/wompi/wompi.service';
+import { CreatePaymentOnWompiResponseDto } from '../shared/wompi/dto/payment-dto';
 
 @Injectable()
 export class PaymentService {

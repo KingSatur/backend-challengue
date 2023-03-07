@@ -11,14 +11,17 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "seed": "ts-node prisma/seed.ts",
+    "start:prod": "node dist/src/main",
+    "seed": "ts-node prisma/seed",
+    "generate": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest auth.controller.spec.ts --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "start:migrate:prod": "prisma migrate deploy && npm run seed && node dist/src/main"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.3.5",

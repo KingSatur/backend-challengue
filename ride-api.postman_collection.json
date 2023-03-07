@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "7b3b6daf-92d1-4b0b-aac0-edf2cab34ac3",
+		"name": "Ride api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Login was success', function(){",
+									"   pm.response.to.have.status(200)",
+									"   const res = pm.response.json();",
+									"   console.log(res)",
+									"   pm.environment.set('token', res.data.token);",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"Hildegard96@hotmail.com\",\n    \"password\": \"driverPassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/rides-api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rides-api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Create payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/rides-api/payment/method/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rides-api",
+								"payment",
+								"method",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ride",
+			"item": [
+				{
+					"name": "Request ride",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitude\":\"{{$randomLatitude}}\",\n    \"longitude\":\"{{$randomLongitude}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/rides-api/ride/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rides-api",
+								"ride",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish ride",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"elapsedMinutes\": 20,\n    \"finalLongitude\": \"{{$randomLongitude}}\",\n    \"finalLatitude\": \"{{$randomLatitude}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/rides-api/ride/528676e0-8933-4847-8961-67fa6dcf25e7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rides-api",
+								"ride",
+								"528676e0-8933-4847-8961-67fa6dcf25e7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { WompiService } from './wampi/wompi.service';
+import { WompiService } from './wompi/wompi.service';
 
 @Module({
   imports: [HttpModule],

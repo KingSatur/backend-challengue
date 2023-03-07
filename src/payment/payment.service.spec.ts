@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentService } from './payment.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { WompiService } from '../shared/wampi/wompi.service';
+import { WompiService } from '../shared/wompi/wompi.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePaymentRequestDto } from './dto/create-payment-request.dto';
 import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
@@ -105,6 +105,28 @@ describe('PaymentService', () => {
         token: 'tok_prod_280_32326B334c47Ec49a516bf1785247ba2',
       },
     });
+  });
+
+  it('Should not create card payment method when exists other payment with same token', async () => {
+    prisma.user.findUnique = jest.fn().mockReturnValue({
+      email: 'sample@mail.com',
+    });
+    prisma.paymentMethod.count = jest.fn().mockReturnValue(1);
+    try {
+      await service.createCardPaymentMethod('', null);
+    } catch (error) {
+      expect(error).toBeDefined();
+      expect(error).toBeInstanceOf(RideManagementException);
+      expect(error?.notification?.status).toBe(400);
+      expect(error?.notification?.message).toBe(
+        ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN
+          .message,
+      );
+      expect(error?.notification?.code).toBe(
+        ExceptionMessage.CANNOT_CREATE_CREATE_PAYMENT_METHOD_WITH_USED_TOKEN
+          .code,
+      );
+    }
   });
 
   it('Should not create card payment method when user is not found', async () => {

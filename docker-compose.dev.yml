@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  ride-system:
+    depends_on:
+      - database-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: challengue/ride-system
+    container_name: ride-system
+    restart: always
+    ports:
+      - '${PORT}:${PORT}'
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASS}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?schema=public&pool_timeout=0
+      CONTEXT_PATH: ${CONTEXT_PATH}
+      PORT: ${PORT}
+      BASE_FEE: ${BASE_FEE}
+      BASE_RIDE_KM_FEE: ${BASE_RIDE_KM_FEE}
+      BASE_RIDE_MINUTE_FEE: ${BASE_RIDE_MINUTE_FEE}
+      WAMPI_API_URL: ${WAMPI_API_URL}
+      CURRENCY_CODE: ${CURRENCY_CODE}
+      VENTURE_REFERENCE: ${VENTURE_REFERENCE}
+      COUNTRY_CODE: ${COUNTRY_CODE}
+      CARD_TOKEN: ${CARD_TOKEN}
+      VENTURE_PUBLIC_KEY: ${VENTURE_PUBLIC_KEY}
+      VENTURE_PRIVATE_KEY: ${VENTURE_PRIVATE_KEY}
+      COP_TO_USD_EQUIVALENCE: ${COP_TO_USD_EQUIVALENCE}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPT_RONDS: ${ENCRYPT_RONDS}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+    networks:
+      - rides
+
+  database-dev:
+    container_name: database-dev
+    image: postgres:14
+    ports:
+      - 5436:${DATABASE_PORT}
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+      POSTGRES_DB: ${DATABASE_NAME}
+    networks:
+      - rides
+
+networks:
+  rides:
