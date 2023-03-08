@@ -1,13 +1,18 @@
 # Ride api, api to request rides
 
-This a simple api to request rides created with nestjs as backend framework, prisma as orm, postgresql as database and layered architecture with controller, service and prisma as repository layer. With this api you can:
+This a simple api to request rides created with nestjs as backend framework, prisma as orm, postgresql as database and layered architecture with controller, service and prisma as repository layer. Below you can find the order in which the resource execution should be, to check the expected bussines behavior:
 
-- Login as a RIDER (person who request for a ride) or as a DRIVER (person who drive to the destination)
-- Request for a ride as a RIDER given a started position (composed by latitude and longitude)
-- Create a payment method as a RIDER, using an already created credit card token on wompi platform.
-- Finish a ride given an elapsed time and a final position (composed by latitude and longitude).
+1. POST: auth/login, Login as a RIDER (person who request for a ride) or as a DRIVER (person who drive to the destination). This endpoint return a token used to subsequent calls in order to check authentication.
+2. POST: /payment/method, Create a payment method as a RIDER, using an already created credit card token on wompi platform.
+3. POST: /ride, Request for a ride as a RIDER given a started position (composed by latitude and longitude) and has the following rules:
+   - If the rider who requests for a ride has another unfinished ride, it will respond as a bad request.
+   - If the rider who requests for a ride does not have a created payment method, it will respond as a bad request.
+4. PUT: /ride/{rideId}, Finish a ride by its database id. This endpoint has the following rules:
+   - If the DRIVER of this rideId is not the same as the decoded in the jwt, it will respond as a bad request.
+   - If there is no a ride with that rideId, it will respond as a not found response.
+   - If the ride was already finished, it will respond as a bad request.
 
-## 1\. Getting started
+## 1. Getting started
 
 ---
 
@@ -18,6 +23,8 @@ Before starting, please make sure you have the following tools in your machine:
 - docker engine
 - docker-compose executable
 - git
+- nodejs (to run tests)
+- npm (to run tests)
 
 If you want to test the application, you should use an http client such as:
 
@@ -43,7 +50,7 @@ The next thing is create your environment variables in order to run the project 
 | BASE_FEE               | Base tax for each ride                                                                      | YES          | number |
 | BASE_RIDE_KM_FEE       | Base fee for each kilometer traveled                                                        | YES          | number |
 | BASE_RIDE_MINUTE_FEE   | Base fee for each minute traveled                                                           | YES          | number |
-| WAMPI_API_URL          | Base url of wompi api                                                                       | YES          | string |
+| WOMPI_API_URL          | Base url of wompi api                                                                       | YES          | string |
 | CURRENCY_CODE          | Currency to convert the amounts, for now is only working with COP. MUST BE: **COP**         | YES          | string |
 | VENTURE_REFERENCE      | Unique reference for each company on the wompi platform                                     | YES          | string |
 | CARD_TOKEN             | Created credit card token to simulate payment method creation                               | YES          | string |
@@ -52,11 +59,11 @@ The next thing is create your environment variables in order to run the project 
 | COP_TO_USD_EQUIVALENCE | Rate to convert from cop to usd currency                                                    | YES          | number |
 | JWT_SECRET             | Secret to login using jwt                                                                   | YES          | string |
 | ENCRYPT_RONDS          | Number of salts to encrypt user password                                                    | NO           | number |
-| DATABASE_USER          | database user. REQUIRED only when executing with docker-compose                             | YES          | string |
-| DATABASE_PASS          | database password. REQUIRED only when executing with docker-compose                         | YES          | string |
-| DATABASE_HOST          | database host. REQUIRED only when executing with docker-compose                             | YES          | string |
-| DATABASE_PORT          | database port. REQUIRED only when executing with docker-compose                             | YES          | string |
-| DATABASE_NAME          | database name. REQUIRED only when executing with docker-compose                             | YES          | string |
+| DATABASE_USER          | database user. REQUIRED when executing with docker-compose                                  | YES          | string |
+| DATABASE_PASS          | database password. REQUIRED when executing with docker-compose                              | YES          | string |
+| DATABASE_HOST          | database host. REQUIRED when executing with docker-compose. MUST BE: database-dev           | YES          | string |
+| DATABASE_PORT          | database port. REQUIRED when executing with docker-compose. MUST BE: 5432                   | YES          | string |
+| DATABASE_NAME          | database name. REQUIRED when executing with docker-compose                                  | YES          | string |
 | NODE_ENV               | environment                                                                                 | YES          | string |
 
 and here is an example of how the .env file should look like:
@@ -67,23 +74,22 @@ PORT=5000
 BASE_FEE=3500
 BASE_RIDE_KM_FEE=1000
 BASE_RIDE_MINUTE_FEE=200
-WAMPI_API_URL=https://sandbox.wompi.co/v1
+WOMPI_API_URL=https://sandbox.wompi.co/v1
 CURRENCY_CODE=COP
 VENTURE_REFERENCE=0-1i2okmJNH192u9-0lmk
 COUNTRY_CODE=CO
 CARD_TOKEN=pub_prod_Kw4aC0rZVgLZQn209NbEKPuXLzBD28Zx
 VENTURE_PUBLIC_KEY=pub_prod_Kw4aC0rZVgLZQn209NbEKPuXLzBD28Zx
-VENTURE_PRIVATE_KEY=pub_prod_Kw4aC0rZVgLZQn209NbEKPuXLzBD28Zx
+VENTURE_PRIVATE_KEY=prv_prod_434092Xa65F54dd6a181D1f87DFa03CzS
 COP_TO_USD_EQUIVALENCE=0.00021
-JWT_SECRET=01ALHIU80D:<>"~!j_)()"
+JWT_SECRET=GjBXWXlsXMt8RweNxx0x9Q1VyXIEUMG1
 ENCRYPT_RONDS=10
-DATABASE_URL=postgresql://postgres:root@localhost:5435/nestjs?schema=public&pool_timeout=0
 DATABASE_USER=postgres
 DATABASE_PASS=root
-DATABASE_HOST=localhost
-DATABASE_PORT=5435
-DATABASE_NAME=nestjs
-NODE_ENV=local
+DATABASE_HOST=database-dev
+DATABASE_PORT=5432
+DATABASE_NAME=ride-db
+NODE_ENV=dev
 ```
 
 ### 1.4 Run the application with docker-compose tool
@@ -106,7 +112,7 @@ It is important to know that "-f" flag is to indicate to docker-compose, which f
       BASE_FEE: ${BASE_FEE}
       BASE_RIDE_KM_FEE: ${BASE_RIDE_KM_FEE}
       BASE_RIDE_MINUTE_FEE: ${BASE_RIDE_MINUTE_FEE}
-      WAMPI_API_URL: ${WAMPI_API_URL}
+      WOMPI_API_URL: ${WOMPI_API_URL}
       CURRENCY_CODE: ${CURRENCY_CODE}
       VENTURE_REFERENCE: ${VENTURE_REFERENCE}
       COUNTRY_CODE: ${COUNTRY_CODE}
@@ -141,7 +147,7 @@ The application database was seeded with dummy data in order to test the api. Be
 
 ### 2.1 Open api docs
 
-In order to test the project, I provide to you both open-api documentation which you can access by going to the port where your application is running, let's say in the port 5000, so you go to
+In order to test the project, there is an open-api documentation which you can access by going to the port where your application is running (the PORT key defined in your .env file), let's say in the port 5000, so you go to
 
 ```
   http://localhost:5000/docs
@@ -151,7 +157,7 @@ in you browser, and it will display the swagger interface where you can check ho
 
 ### 2.2 Postman documentation
 
-In the case you have installed postman on your machine, you can import the following files located in the project, into your postman application, which provides the collection and environment required to consume the different endpoints
+In the case you have installed postman on your machine, you can import the following files located in the project, into postman application, which provides the collection and environment required to consume the different endpoints
 
 ```
   ride-api-dev-environment.postman_environment.json --> Environment
@@ -212,13 +218,11 @@ Below we have the project structure tree, composed by 5 modules:
 │   │   │   ├── create-ride-response.dto.ts
 │   │   │   ├── finish-ride-request.dto.ts
 │   │   │   └── finish-ride-response.dto.ts
-│   │   ├── payment-copy.ts
 │   │   ├── ride.controller.spec.ts
 │   │   ├── ride.controller.ts
 │   │   ├── ride.module.ts
 │   │   ├── ride.service.spec.ts
 │   │   ├── ride.service.ts
-│   │   └── wompi-copy.ts
 │   └── shared
 │       ├── decorators
 │       │   ├── has-roles.decorator.ts
@@ -245,6 +249,29 @@ Below we have the project structure tree, composed by 5 modules:
 
 ```
 
-### 3.1 Testing
+### 3.1 Testing summary
 
-In respect of testing, each service and controller has its own testing file, who tests the methods and mocks dependencies using approach such as spy's and stubs.
+In respect of testing, each service and controller has its own testing file, who tests the methods and mocks dependencies using approach such as spys and stubs. In the case of e2e testing, there was a created a file to execute all the e2e test with the real layers, however, the prisma layer and wompi service layer (who communicates with wompi service) were mocked due to the need no to depend on the availabilty of external service, and dont create database just for e2e file execution, which in some case are needed.
+
+#### 3.2 Running unitary tests
+
+To execute unitary tests, you have to execute the following commands
+
+```
+## Download all the required dependencies required in the package.json to be able to run the tests
+npm i
+
+```
+
+```
+## Run unitary tests
+npm run test
+```
+
+### 3.3 Running e2e test
+
+The next step will be run the end to end test. For that, you can execute.
+
+```
+npm run test:e2e
+```

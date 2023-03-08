@@ -20,7 +20,7 @@ export class WompiService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.baseUrl = this.configService.get<string>('wampi_url');
+    this.baseUrl = this.configService.get<string>('wompi_url');
     this.currencyCode = this.configService.get<string>('currency_code');
     this.ventureReference = this.configService.get<string>('venture_reference');
     this.countryCode = this.configService.get<string>('country_code');

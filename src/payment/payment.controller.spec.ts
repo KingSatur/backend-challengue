@@ -2,8 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from '../prisma/prisma.module';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { PrismaService } from '../prisma/prisma.service';
+
+const mockPrisma = {
+  user: { findUnique: () => {} },
+  paymentMethod: { count: () => {}, create: jest.fn() },
+};
 
 describe('PaymentController', () => {
   let controller: PaymentController;
@@ -18,13 +23,16 @@ describe('PaymentController', () => {
           provide: PaymentService,
           useValue: paymentService,
         },
+        {
+          provide: PrismaService,
+          useValue: mockPrisma,
+        },
       ],
       imports: [
         ConfigModule.forRoot({
           load: [],
           isGlobal: true,
         }),
-        PrismaModule,
       ],
     }).compile();
 

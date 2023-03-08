@@ -5,8 +5,8 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const config = new DocumentBuilder()
-    .setTitle('Backend challengue api specs')
-    .setDescription('Rest api specification')
+    .setTitle('Api specs')
+    .setDescription('Ride api specification')
     .setVersion('v1')
     .addTag('')
     .addBearerAuth(

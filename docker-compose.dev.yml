@@ -19,7 +19,7 @@ services:
       BASE_FEE: ${BASE_FEE}
       BASE_RIDE_KM_FEE: ${BASE_RIDE_KM_FEE}
       BASE_RIDE_MINUTE_FEE: ${BASE_RIDE_MINUTE_FEE}
-      WAMPI_API_URL: ${WAMPI_API_URL}
+      WOMPI_API_URL: ${WOMPI_API_URL}
       CURRENCY_CODE: ${CURRENCY_CODE}
       VENTURE_REFERENCE: ${VENTURE_REFERENCE}
       COUNTRY_CODE: ${COUNTRY_CODE}
@@ -41,7 +41,7 @@ services:
     container_name: database-dev
     image: postgres:14
     ports:
-      - 5436:${DATABASE_PORT}
+      - 5450:${DATABASE_PORT}
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASS}

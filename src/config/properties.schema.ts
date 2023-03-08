@@ -7,7 +7,7 @@ export const PropertiesValidationSchema = Joi.object({
   BASE_FEE: Joi.number().required(),
   BASE_RIDE_KM_FEE: Joi.number().required(),
   BASE_RIDE_MINUTE_FEE: Joi.number().required(),
-  WAMPI_API_URL: Joi.string().required(),
+  WOMPI_API_URL: Joi.string().required(),
   CURRENCY_CODE: Joi.string().required(),
   VENTURE_REFERENCE: Joi.string().required(),
   COUNTRY_CODE: Joi.string().required(),

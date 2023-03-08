@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Properties } from './config/properties.config';
-import { PrismaModule } from './prisma/prisma.module';
 import { PaymentModule } from './payment/payment.module';
 import { RideModule } from './ride/ride.module';
 import { APP_FILTER } from '@nestjs/core';
@@ -16,7 +15,6 @@ import { PropertiesValidationSchema } from './config/properties.schema';
       isGlobal: true,
       validationSchema: PropertiesValidationSchema,
     }),
-    PrismaModule,
     AuthModule,
     PaymentModule,
     RideModule,

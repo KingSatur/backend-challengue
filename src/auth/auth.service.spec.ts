@@ -9,7 +9,7 @@ const configValues = {
   base_ride_fee: 3500,
   base_ride_km_fee: 1000,
   base_ride_minute_fee: 200,
-  wampi_url: 'https://sandbox.wompi.co/v1',
+  wompi_url: 'https://sandbox.wompi.co/v1',
   currency_code: 'COP',
   venture_reference: '0-1i2okmJNH192u9-0lmk',
   country_code: 'CO',
